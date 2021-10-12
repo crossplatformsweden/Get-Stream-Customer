@@ -29,8 +29,6 @@ const App = () => {
 
   useEffect(() => {
     const init = async () => {
-      console.log(email);
-      console.log(token);
       const client = StreamChat.getInstance(apiKey);
 
       await client.connectUser(
@@ -45,7 +43,6 @@ const App = () => {
         subtitle: "#853 CUstomer Inquiry",
         // option to add custom fields
       });
-      console.log(channel);
       channel.watch();
       setCustomerChannel(channel);
     };
@@ -55,7 +52,14 @@ const App = () => {
     <div>
       {client && (
         <Chat client={client!}>
-          <Channel channel={customerChannel!}>
+          <Channel
+            channel={customerChannel!}
+            doSendMessageRequest={(channelId, message) => {
+              if (message.text === "Quit") {
+                customerChannel.stopWatching();
+              }
+            }}
+          >
             <Window>
               <CustomChannelHeader client={client} />
               <MessageList />
@@ -80,7 +84,13 @@ const CustomChannelHeader = (props: ICustomerChannelHeader) => {
   return (
     <div className="channel-header__container">
       <div className="channel-header__heading">
-        <div className="channel-header__active" />
+        <div
+          className={
+            watcherCount! > 1
+              ? "channel-header__active"
+              : "channel-header__inactive"
+          }
+        />
         <div className="channel-header__text">
           <p className="channel-header__name">
             Hello
@@ -88,7 +98,11 @@ const CustomChannelHeader = (props: ICustomerChannelHeader) => {
               👋
             </span>
           </p>
-          <p className="channel-header__subtitle">We are here to help.</p>
+          <p className="channel-header__subtitle">
+            {watcherCount! > 1
+              ? "We are here to help."
+              : "Come back again later"}
+          </p>
         </div>
       </div>
       <div className="channel-header__wait__wrapper">
