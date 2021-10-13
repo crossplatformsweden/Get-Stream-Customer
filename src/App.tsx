@@ -8,6 +8,7 @@ import {
   MessageInput,
   MessageList,
   useChannelStateContext,
+  ChannelHeader,
 } from "stream-chat-react";
 import { StreamChat } from "stream-chat";
 
@@ -36,7 +37,6 @@ const App = () => {
         token
       );
       setClient(client);
-
       const channel = client!.channel("messaging", agentChannel, {
         issue: "Customer Issue ####",
         image: logo,
@@ -61,6 +61,7 @@ const App = () => {
             }}
           >
             <Window>
+              {/* <ChannelHeader/> */}
               <CustomChannelHeader client={client} />
               <MessageList />
               <MessageInput focus />
